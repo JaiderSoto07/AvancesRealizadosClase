@@ -13,6 +13,11 @@ public class PruebaBuilder {
 				.nombre("C")
 				.id(UtilUUID.generar())
 				.Build();
+
+		System.out.println("Pais uno: id=" + dominioPaisUno.getId() + ", nombre=" + dominioPaisUno.getNombre());
+		System.out.println("Pais con id: id=" + dominiopaisconID.getId() + ", nombre=" + dominiopaisconID.getNombre());
+		System.out.println("Pais con nombre: id=" + dominiopaisConNombre.getId() + ", nombre=" + dominiopaisConNombre.getNombre());
+		System.out.println("Pais completo: id=" + dominioPaisCompleto.getId() + ", nombre=" + dominioPaisCompleto.getNombre());
 	}
 
 }
