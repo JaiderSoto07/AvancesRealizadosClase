@@ -4,6 +4,9 @@ import java.sql.Connection;
 
 import co.edu.uco.libreriauco.dao.datos.entidad.DepartamentoDAO;
 import co.edu.uco.libreriauco.dao.datos.entidad.PaisDAO;
+import co.edu.uco.libreriauco.dao.datos.entidad.sqlserver.DepartamentoSqlServerDAO;
+import co.edu.uco.libreriauco.dao.datos.entidad.sqlserver.PaisSqlServerDAO;
+import co.edu.uco.libreriauco.transversal.utilitarios.UtilSQL;
 
 public abstract class DAOFactory {
 	
@@ -25,24 +28,28 @@ public abstract class DAOFactory {
 	protected abstract void abrirConexion();
 	
 	public void cerrarConexion() {
-		//Tarea : ¿Como se cierra la conexion de forma segura?
+		UtilSQL.cerrarConexion(conexion);
 	}
 	
 	public void iniciarTransaccion() {
-		//Tarea : ¿Como se inicia una transaccion de forma segura?
+		UtilSQL.iniciarTransacion(conexion);
 	}
 	
 	public void confirmarTransaccion() {
-		//Tarea : ¿Como se confirmar una transaccion de forma segura?
+		UtilSQL.confirmarTransaccion(conexion);
 	}
 	
 	public void cancelarTransaccion() {
-		//Tarea : ¿Como se cancelar una transaccion de forma segura?
+		UtilSQL.cancelarTransaccion(conexion);
 	}
 	
-	public abstract PaisDAO obtenerPaisDAO();
+	public PaisDAO obtenerPaisDAO() {
+		return new PaisSqlServerDAO(getConexion());
+	}
 	
-	public abstract DepartamentoDAO obtenerDepartamentoDAO();
+	public DepartamentoDAO obtenerDepartamentoDAO() {
+		return new DepartamentoSqlServerDAO(getConexion());
+	}
 	
 	
 	

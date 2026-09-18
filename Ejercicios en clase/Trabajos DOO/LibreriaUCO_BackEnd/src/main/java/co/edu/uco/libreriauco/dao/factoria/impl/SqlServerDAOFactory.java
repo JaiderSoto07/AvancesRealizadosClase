@@ -22,13 +22,13 @@ public class SqlServerDAOFactory extends DAOFactory {
 	@Override
 	public PaisDAO obtenerPaisDAO() {
 		// TODO Auto-generated method stub
-		return new PaisSqlServerDAO();
+		return new PaisSqlServerDAO(getConexion());
 	}
 
 	@Override
 	public DepartamentoDAO obtenerDepartamentoDAO() {
 		// TODO Auto-generated method stub
-		return new DepartamentoSqlServerDAO();
+		return new DepartamentoSqlServerDAO(getConexion());
 	}
 
 }
