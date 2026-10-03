@@ -10,10 +10,14 @@ public class PaisEntidad {
 	private UUID id;
 	private String nombre;
 
-	private PaisEntidad(UUID id, String nombre) {
-		super();
-		this.id = id;
-		this.nombre = nombre;
+	public PaisEntidad() {
+		setId(UtilUUID.obtenerValorDefecto(id));
+		setNombre(UtilTexto.VACIO);
+	}
+	
+	public PaisEntidad(UUID id, String nombre) {
+		setId(id);
+		setNombre(nombre);
 	}
 
 	private PaisEntidad(Builder builder) {
@@ -28,6 +32,14 @@ public class PaisEntidad {
 
 	public String getNombre() {
 		return nombre;
+	}
+	
+	public void setId(UUID id) {
+		this.id = UtilUUID.obtenerValorDefecto(id);
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = UtilTexto.getUtilTexto().quitarEspaciosEnBlanco(nombre);
 	}
 
 	public static class Builder {

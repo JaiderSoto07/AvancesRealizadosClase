@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.libreriauco.dao.datos.entidad.DepartamentoDAO;
+import co.edu.uco.libreriauco.dao.datos.entidad.CiudadDAO;
 import co.edu.uco.libreriauco.dao.datos.entidad.SqlDAO;
+import co.edu.uco.libreriauco.entidad.CiudadEntidad;
 import co.edu.uco.libreriauco.entidad.DepartamentoEntidad;
 import co.edu.uco.libreriauco.entidad.PaisEntidad;
 import co.edu.uco.libreriauco.transversal.catalogo.CatalogoMensajes;
@@ -17,61 +18,66 @@ import co.edu.uco.libreriauco.transversal.utilitarios.UtilObjeto;
 import co.edu.uco.libreriauco.transversal.utilitarios.UtilTexto;
 import co.edu.uco.libreriauco.transversal.utilitarios.UtilUUID;
 
-public class DepartamentoSqlServerDAO extends SqlDAO implements DepartamentoDAO {
+public class CiudadSqlServerDAO extends SqlDAO implements CiudadDAO {
 
-	// Se une con pais para devolver cada departamento con la informacion de su pais
-	private static final String SELECT_BASE = "SELECT d.id, d.nombre, p.id AS id_pais, p.nombre AS nombre_pais "
-			+ "FROM departamento d INNER JOIN pais p ON p.id = d.pais";
+	private static final String SELECT_BASE = "SELECT c.id, c.nombre, "
+			+ "d.id AS id_departamento, d.nombre AS nombre_departamento, "
+			+ "p.id AS id_pais, p.nombre AS nombre_pais "
+			+ "FROM ciudad c "
+			+ "INNER JOIN departamento d ON d.id = c.departamento "
+			+ "INNER JOIN pais p ON p.id = d.pais";
 
-	public DepartamentoSqlServerDAO(Connection conexion) {
+	public CiudadSqlServerDAO(Connection conexion) {
 		super(conexion);
 	}
 
 	@Override
-	public DepartamentoEntidad consultarPorId(UUID id) {
-		var sentenciaSql = SELECT_BASE + " WHERE d.id = ?";
-		// Si no se encuentra el departamento se retorna uno con valores por defecto, nunca null
-		var departamentoEncontrado = new DepartamentoEntidad.Builder().Build();
+	public CiudadEntidad consultarPorId(UUID id) {
+		var sentenciaSql = SELECT_BASE + " WHERE c.id = ?";
+		var ciudadEncontrada = new CiudadEntidad.Builder().Build();
 
 		try (var sentencia = getConnection().prepareStatement(sentenciaSql)) {
 			sentencia.setString(1, UtilUUID.obtenerValorDefecto(id).toString());
 
 			try (var resultado = sentencia.executeQuery()) {
 				if (resultado.next()) {
-					departamentoEncontrado = mapear(resultado);
+					ciudadEncontrada = mapear(resultado);
 				}
 			}
 		} catch (SQLException excepcion) {
-			var mensajeUsuario = CatalogoMensajes.DepartamentoSqlServerDAO.USUARIO_ERROR_PROBLEMA_CONSULTANDO_DEPARTAMENTO_POR_ID;
+			var mensajeUsuario = CatalogoMensajes.CiudadSqlServerDAO.USUARIO_ERROR_PROBLEMA_CONSULTANDO_CIUDAD_POR_ID;
 			throw LibreriaUCODatosException.crear(mensajeUsuario, excepcion.getMessage(), excepcion);
 		} catch (Exception excepcion) {
-			var mensajeUsuario = CatalogoMensajes.DepartamentoSqlServerDAO.USUARIO_ERROR_PROBLEMA_NO_CONTROLADO_CONSULTANDO_DEPARTAMENTO_POR_ID;
+			var mensajeUsuario = CatalogoMensajes.CiudadSqlServerDAO.USUARIO_ERROR_PROBLEMA_NO_CONTROLADO_CONSULTANDO_CIUDAD_POR_ID;
 			throw LibreriaUCODatosException.crear(mensajeUsuario, excepcion.getMessage(), excepcion);
 		}
 
-		return departamentoEncontrado;
+		return ciudadEncontrada;
 	}
 
 	@Override
-	public List<DepartamentoEntidad> consultarPorFiltro(DepartamentoEntidad filtro) {
-		// Solo se filtra por los campos que traen valor; un filtro vacio trae todos los departamentos
-		var filtroSeguro = UtilObjeto.obtenerValorDefectoSiNulo(filtro, new DepartamentoEntidad.Builder().Build());
+	public List<CiudadEntidad> consultarPorFiltro(CiudadEntidad filtro) {
+		var filtroSeguro = UtilObjeto.obtenerValorDefectoSiNulo(filtro, new CiudadEntidad.Builder().Build());
 		var sentenciaSql = new StringBuilder(SELECT_BASE).append(" WHERE 1 = 1");
 		var parametros = new ArrayList<String>();
 
 		if (!UtilUUID.UUID_DEFECTO.equals(filtroSeguro.getId())) {
-			sentenciaSql.append(" AND d.id = ?");
+			sentenciaSql.append(" AND c.id = ?");
 			parametros.add(filtroSeguro.getId().toString());
 		}
 		if (!UtilTexto.getUtilTexto().esVacia(filtroSeguro.getNombre())) {
-			sentenciaSql.append(" AND d.nombre = ?");
+			sentenciaSql.append(" AND c.nombre = ?");
 			parametros.add(filtroSeguro.getNombre());
 		}
-		if (!UtilUUID.UUID_DEFECTO.equals(filtroSeguro.getPais().getId())) {
-			sentenciaSql.append(" AND p.id = ?");
-			parametros.add(filtroSeguro.getPais().getId().toString());
+		if (!UtilUUID.UUID_DEFECTO.equals(filtroSeguro.getDepartamento().getId())) {
+			sentenciaSql.append(" AND d.id = ?");
+			parametros.add(filtroSeguro.getDepartamento().getId().toString());
 		}
-		sentenciaSql.append(" ORDER BY d.nombre");
+		if (!UtilUUID.UUID_DEFECTO.equals(filtroSeguro.getDepartamento().getPais().getId())) {
+			sentenciaSql.append(" AND p.id = ?");
+			parametros.add(filtroSeguro.getDepartamento().getPais().getId().toString());
+		}
+		sentenciaSql.append(" ORDER BY c.nombre");
 
 		try (var sentencia = getConnection().prepareStatement(sentenciaSql.toString())) {
 			for (var indice = 0; indice < parametros.size(); indice++) {
@@ -79,51 +85,57 @@ public class DepartamentoSqlServerDAO extends SqlDAO implements DepartamentoDAO 
 			}
 			return ejecutarConsulta(sentencia.executeQuery());
 		} catch (SQLException excepcion) {
-			var mensajeUsuario = CatalogoMensajes.DepartamentoSqlServerDAO.USUARIO_ERROR_PROBLEMA_CONSULTANDO_DEPARTAMENTOS_POR_FILTRO;
+			var mensajeUsuario = CatalogoMensajes.CiudadSqlServerDAO.USUARIO_ERROR_PROBLEMA_CONSULTANDO_CIUDADES_POR_FILTRO;
 			throw LibreriaUCODatosException.crear(mensajeUsuario, excepcion.getMessage(), excepcion);
 		} catch (Exception excepcion) {
-			var mensajeUsuario = CatalogoMensajes.DepartamentoSqlServerDAO.USUARIO_ERROR_PROBLEMA_NO_CONTROLADO_CONSULTANDO_DEPARTAMENTOS_POR_FILTRO;
+			var mensajeUsuario = CatalogoMensajes.CiudadSqlServerDAO.USUARIO_ERROR_PROBLEMA_NO_CONTROLADO_CONSULTANDO_CIUDADES_POR_FILTRO;
 			throw LibreriaUCODatosException.crear(mensajeUsuario, excepcion.getMessage(), excepcion);
 		}
 	}
 
 	@Override
-	public List<DepartamentoEntidad> consultarTodos() {
-		var sentenciaSql = SELECT_BASE + " ORDER BY d.nombre";
+	public List<CiudadEntidad> consultarTodos() {
+		var sentenciaSql = SELECT_BASE + " ORDER BY c.nombre";
 
 		try (var sentencia = getConnection().prepareStatement(sentenciaSql)) {
 			return ejecutarConsulta(sentencia.executeQuery());
 		} catch (SQLException excepcion) {
-			var mensajeUsuario = CatalogoMensajes.DepartamentoSqlServerDAO.USUARIO_ERROR_PROBLEMA_CONSULTANDO_TODOS_LOS_DEPARTAMENTOS;
+			var mensajeUsuario = CatalogoMensajes.CiudadSqlServerDAO.USUARIO_ERROR_PROBLEMA_CONSULTANDO_TODAS_LAS_CIUDADES;
 			throw LibreriaUCODatosException.crear(mensajeUsuario, excepcion.getMessage(), excepcion);
 		} catch (Exception excepcion) {
-			var mensajeUsuario = CatalogoMensajes.DepartamentoSqlServerDAO.USUARIO_ERROR_PROBLEMA_NO_CONTROLADO_CONSULTANDO_TODOS_LOS_DEPARTAMENTOS;
+			var mensajeUsuario = CatalogoMensajes.CiudadSqlServerDAO.USUARIO_ERROR_PROBLEMA_NO_CONTROLADO_CONSULTANDO_TODAS_LAS_CIUDADES;
 			throw LibreriaUCODatosException.crear(mensajeUsuario, excepcion.getMessage(), excepcion);
 		}
 	}
 
-	private List<DepartamentoEntidad> ejecutarConsulta(ResultSet resultado) throws SQLException {
-		var departamentos = new ArrayList<DepartamentoEntidad>();
+	private List<CiudadEntidad> ejecutarConsulta(ResultSet resultado) throws SQLException {
+		var ciudades = new ArrayList<CiudadEntidad>();
 
 		try (resultado) {
 			while (resultado.next()) {
-				departamentos.add(mapear(resultado));
+				ciudades.add(mapear(resultado));
 			}
 		}
 
-		return departamentos;
+		return ciudades;
 	}
 
-	private DepartamentoEntidad mapear(ResultSet resultado) throws SQLException {
+	private CiudadEntidad mapear(ResultSet resultado) throws SQLException {
 		var pais = new PaisEntidad.Builder()
 				.id(UUID.fromString(resultado.getString("id_pais")))
 				.nombre(resultado.getString("nombre_pais"))
 				.Build();
 
-		return new DepartamentoEntidad.Builder()
+		var departamento = new DepartamentoEntidad.Builder()
+				.id(UUID.fromString(resultado.getString("id_departamento")))
+				.nombre(resultado.getString("nombre_departamento"))
+				.pais(pais)
+				.Build();
+
+		return new CiudadEntidad.Builder()
 				.id(UUID.fromString(resultado.getString("id")))
 				.nombre(resultado.getString("nombre"))
-				.pais(pais)
+				.departamento(departamento)
 				.Build();
 	}
 

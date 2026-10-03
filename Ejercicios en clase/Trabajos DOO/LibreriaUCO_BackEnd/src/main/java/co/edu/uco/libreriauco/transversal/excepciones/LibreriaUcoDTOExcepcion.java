@@ -10,5 +10,22 @@ public class LibreriaUcoDTOExcepcion extends LibreriaUCOExcepcion {
 			Exception excepcionRaiz) {
 		super(Capa.DTO, mensajeUsuario, mensajeTecnico, excepcionRaiz);
 	}
+	
+	public static LibreriaUCOExcepcion crear (String mensajeUsuario) {
+		return new LibreriaUcoDTOExcepcion(mensajeUsuario, mensajeUsuario,
+				new Exception(mensajeUsuario));
+
+	}
+
+	public static LibreriaUCOExcepcion crear (String mensajeUsuario, String mensajeTecnico) {
+		return new LibreriaUcoDTOExcepcion(mensajeUsuario, mensajeTecnico,
+				new Exception(mensajeTecnico));
+
+	}
+
+	public static LibreriaUCOExcepcion crear (String mensajeUsuario, String mensajeTecnico, Exception excepcionRaiz) {
+		return new LibreriaUcoDTOExcepcion(mensajeUsuario, mensajeTecnico, excepcionRaiz);
+
+	}
 
 }

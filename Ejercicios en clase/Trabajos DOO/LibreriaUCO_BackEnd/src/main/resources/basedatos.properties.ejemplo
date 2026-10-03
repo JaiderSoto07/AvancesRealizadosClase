@@ -1,0 +1,5 @@
+# Copie este archivo como basedatos.properties y ponga sus datos reales.
+# basedatos.properties esta en .gitignore: NO lo suba al repositorio.
+spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=LibreriaUCO;encrypt=true;trustServerCertificate=true
+spring.datasource.username=libreriauco_app
+spring.datasource.password=CAMBIAR_POR_LA_CLAVE

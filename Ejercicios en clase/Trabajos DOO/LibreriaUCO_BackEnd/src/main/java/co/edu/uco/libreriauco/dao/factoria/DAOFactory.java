@@ -2,6 +2,7 @@ package co.edu.uco.libreriauco.dao.factoria;
 
 import java.sql.Connection;
 
+import co.edu.uco.libreriauco.dao.datos.entidad.CiudadDAO;
 import co.edu.uco.libreriauco.dao.datos.entidad.DepartamentoDAO;
 import co.edu.uco.libreriauco.dao.datos.entidad.PaisDAO;
 import co.edu.uco.libreriauco.dao.datos.entidad.sqlserver.DepartamentoSqlServerDAO;
@@ -21,7 +22,7 @@ public abstract class DAOFactory {
 	}
 
 	protected void setConexion(Connection conexion) {
-		//Tarea:Asegurar que la conexion sea abierta y sea valida
+		UtilSQL.asegurarConexionAbierta(conexion);
 		this.conexion = conexion;
 	}
 	
@@ -41,6 +42,8 @@ public abstract class DAOFactory {
 	
 	public void cancelarTransaccion() {
 		UtilSQL.cancelarTransaccion(conexion);
+		
+		
 	}
 	
 	public PaisDAO obtenerPaisDAO() {
@@ -50,7 +53,9 @@ public abstract class DAOFactory {
 	public DepartamentoDAO obtenerDepartamentoDAO() {
 		return new DepartamentoSqlServerDAO(getConexion());
 	}
-	
+
+	public abstract CiudadDAO obtenerCiudadDAO();
+
 	
 	
 	
