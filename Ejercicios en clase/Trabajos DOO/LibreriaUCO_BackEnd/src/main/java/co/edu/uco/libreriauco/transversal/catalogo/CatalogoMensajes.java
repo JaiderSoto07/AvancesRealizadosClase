@@ -92,6 +92,11 @@ public class CatalogoMensajes {
 			
 		}
 		
+		
 		public static final String PAIS_YA_EXISTE_CON_EL_MISMO_NOMBRE_DE_PAIS_A_CREAR = "ya existe otro pais con el cual se desea crear el pais deseado";
+		
+		public static  final String NOMBRE_PAIS_OBLIGATORIO  = "El nombre del pais es obligatorio para llevar a cabo la operacion deseada";
+		public static final String LONGITUD_NOMBRE_PAIS_NO_VALIDA = "La longitud del pais no es válida. Asegurese que esté entre 1 y 50";
+		public static final String FORMATO_NOMBRE_PAIS_NO_VALIDO = "El formato del pais no es valido asegurese de copiarlo de forma correcta, qe tenga letras de la a a la z, mayusculas o minusculas y espacios";
 	}
 	}
