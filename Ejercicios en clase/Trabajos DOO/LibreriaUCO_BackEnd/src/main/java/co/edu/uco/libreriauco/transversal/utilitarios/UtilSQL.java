@@ -31,7 +31,7 @@ private UtilSQL() {
 	
 	public static void asegurarConexionAbierta(Connection conexion) {
 		if(!conexionEstaAbierta(conexion)) {
-			var mensajeUsuario = "mensaje que indique en terminos de usuario que no es posible continuar por que no es posible continuar por que la conexion no esta abierta";
+			var mensajeUsuario = CatalogoMensajes.UtilSQL.USUARIO_ERROR_CONEXION_SQL_NO_ESTA_ABIERTA;
 			throw LibreriaUCOControladorException.crear(mensajeUsuario);
 			
 		}

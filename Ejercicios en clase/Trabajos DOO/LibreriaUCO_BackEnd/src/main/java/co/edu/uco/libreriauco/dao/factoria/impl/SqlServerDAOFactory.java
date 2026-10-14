@@ -18,7 +18,7 @@ import co.edu.uco.libreriauco.transversal.excepciones.LibreriaUCOTransversalExce
 
 public class SqlServerDAOFactory extends DAOFactory {
 
-	// Archivo del classpath (src/main/resources) con los datos de conexion; no se sube a Git
+
 	private static final String ARCHIVO_CONFIGURACION = "basedatos.properties";
 	private static final String PROPIEDAD_URL = "spring.datasource.url";
 	private static final String PROPIEDAD_USUARIO = "spring.datasource.username";

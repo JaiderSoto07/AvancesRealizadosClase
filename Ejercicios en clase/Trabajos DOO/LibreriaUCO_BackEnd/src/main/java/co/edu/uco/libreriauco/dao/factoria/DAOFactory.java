@@ -7,11 +7,26 @@ import co.edu.uco.libreriauco.dao.datos.entidad.DepartamentoDAO;
 import co.edu.uco.libreriauco.dao.datos.entidad.PaisDAO;
 import co.edu.uco.libreriauco.dao.datos.entidad.sqlserver.DepartamentoSqlServerDAO;
 import co.edu.uco.libreriauco.dao.datos.entidad.sqlserver.PaisSqlServerDAO;
+import co.edu.uco.libreriauco.dao.factoria.enums.FactoriaEnum;
+import co.edu.uco.libreriauco.dao.factoria.impl.SqlServerDAOFactory;
+import co.edu.uco.libreriauco.transversal.catalogo.CatalogoMensajes;
+import co.edu.uco.libreriauco.transversal.excepciones.LibreriaUCODatosException;
 import co.edu.uco.libreriauco.transversal.utilitarios.UtilSQL;
 
 public abstract class DAOFactory {
 	
 	private Connection conexion;
+	private static FactoriaEnum factoria = FactoriaEnum.SQLSERVER;
+	
+	public static DAOFactory obtenerFactoria() {
+		switch (factoria) {
+		case SQLSERVER:
+			return new SqlServerDAOFactory();
+		default:
+			var mensajeUsuario = CatalogoMensajes.DAOFactory.USUARIO_ERROR_FUENTE_INFORMACION_NO_HABILITADA;
+			throw LibreriaUCODatosException.crear(mensajeUsuario);
+		}
+	}
 	
 	protected DAOFactory () {
 		abrirConexion();

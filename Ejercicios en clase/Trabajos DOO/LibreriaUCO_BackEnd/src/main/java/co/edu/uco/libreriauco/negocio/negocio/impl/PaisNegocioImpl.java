@@ -18,7 +18,7 @@ public class PaisNegocioImpl implements PaisNegocio{
 	
 	private DAOFactory daoFactory;
 	
-	protected PaisNegocioImpl(DAOFactory daoFactory) {
+	public PaisNegocioImpl(DAOFactory daoFactory) {
 		this.daoFactory = daoFactory;
 	}
 
@@ -70,8 +70,8 @@ public class PaisNegocioImpl implements PaisNegocio{
 
 	@Override
 	public List<PaisDominio> consultarTodos() {
-		// TODO Auto-generated method stub
-		return null;
+		var listaEntidades = daoFactory.obtenerPaisDAO().consultarTodos();
+		return listaEntidades.stream().map(PaisEntidadEAssembler.getIntance()::convertirADominio).toList();
 	}
 
 	@Override

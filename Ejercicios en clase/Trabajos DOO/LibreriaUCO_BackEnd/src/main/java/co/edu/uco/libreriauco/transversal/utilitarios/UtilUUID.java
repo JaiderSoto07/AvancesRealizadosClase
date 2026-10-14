@@ -1,14 +1,11 @@
 package co.edu.uco.libreriauco.transversal.utilitarios;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public class UtilUUID {
 	
 	public static UUID UUID_DEFECTO = new UUID(0L, 0L);
-
-	public static UUID generar() {
-        return UUID.randomUUID();
-    }
 	
 	public static UUID obtenerValorDefecto(UUID id, UUID idDefecto){
 		return UtilObjeto.obtenerValorDefectoSiNulo(id, idDefecto);
@@ -21,6 +18,15 @@ public class UtilUUID {
     public static boolean esNulo(UUID identificador) {
         return identificador == null;
     }
+    
+    public static UUID generar() {
+        return UUID.ofEpochMillis(Instant.now().toEpochMilli());
+    }
+    
+    public static String generarComoTexto() {
+        return UUID.randomUUID().toString();
+    }
+    
 
     public static boolean esValido(String identificador) {
 
