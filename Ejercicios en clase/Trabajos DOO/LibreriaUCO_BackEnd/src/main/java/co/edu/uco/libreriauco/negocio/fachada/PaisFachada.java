@@ -9,9 +9,9 @@ public interface PaisFachada  {
 	
 	void registrarInformacionNuevoPais(PaisDTO datos);
 	
-	void modificarInformacionPaisExistente(UUID id ,PaisDTO datos);
+	void modificarInformacionPaisExistente(UUID id ,PaisDTO datos);  	//pacth
 	
-	void DarBajaInformacionPaisExistente(UUID id);
+	void DarBajaInformacionPaisExistente(UUID id);						//delete
 	
 	List<PaisDTO> ConsultarPorFiltro(PaisDTO filtro);
 	

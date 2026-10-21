@@ -2,6 +2,8 @@ package co.edu.uco.libreriauco.controlador.respuesta;
 
 import java.util.List;
 
+import co.edu.uco.libreriauco.transversal.utilitarios.UtilTexto;
+
 public class RespuestaOk<D> extends Respuesta<D> {
 
 	protected RespuestaOk(List<String> mensajes, List<D> datos) {
@@ -13,6 +15,11 @@ public class RespuestaOk<D> extends Respuesta<D> {
 	
 	public static <D> RespuestaOk<D> crear(List<String> mensajes, List<D> datos){
 		return new RespuestaOk<>(mensajes,datos);
+	}
+	
+	public static <D> RespuestaOk<D> crear(String mensajes){
+		var mensajeFormateado = UtilTexto.getUtilTexto().quitarEspaciosEnBlanco(mensajes);
+		return new RespuestaOk<>(List.of(mensajeFormateado), List.of());
 	}
 	
 	public static <D> RespuestaOk<D> crear(List<D> datos){

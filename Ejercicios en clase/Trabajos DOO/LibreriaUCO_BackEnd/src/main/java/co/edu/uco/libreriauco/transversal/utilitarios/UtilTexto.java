@@ -4,7 +4,7 @@ public class UtilTexto {
 	
 	private static UtilTexto INSTANCIA;
 	public static String VACIO = "";
-	public static final String SOLO_LETRAS_ESPACIOS ="{^[a-zA-Z ñÑáÁéÉíÍóÓúÚ]*$";
+	public static final String SOLO_LETRAS_ESPACIOS ="^[a-zA-Z ñÑáÁéÉíÍóÓúÚ]*$";
 	
 	private UtilTexto () {
 		
@@ -67,7 +67,15 @@ public class UtilTexto {
 	public boolean formatoEsValido(String valor , String patron) {
 		return obtenerValorDefecto(valor).matches(obtenerValorDefecto(patron));
 	}
-	
+
+	public String concatenar(Object... valores) {
+		var resultado = new StringBuilder();
+		for (var valor : valores) {
+			resultado.append(UtilObjeto.obtenerValorDefectoSiNulo(valor, VACIO));
+		}
+		return resultado.toString();
+	}
+
 	
 
 }

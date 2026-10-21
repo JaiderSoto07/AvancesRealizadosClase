@@ -75,14 +75,45 @@ public class PaisFachadaImpl implements PaisFachada {
 
 	@Override
 	public void DarBajaInformacionPaisExistente(UUID id) {
-		
-		
+
+		daoFactory.iniciarTransaccion();
+
+		try {
+			paisNegocio.DarBajaInformacionPaisExistente(id);
+			daoFactory.confirmarTransaccion();
+
+		} 	catch (LibreriaUCOExcepcion excepcion) {
+			daoFactory.cancelarTransaccion();
+			throw excepcion;
+		} 	catch (Exception excepcion) {
+			daoFactory.cancelarTransaccion();
+
+			var mensajeUsuario = CatalogoMensajes.PaisFachadaImpl.USUARIO_ERROR_PROBLEMA_INESPERADO_DANDO_BAJA_PAIS;
+			throw LibreriaUCOFachadaException.crear(mensajeUsuario, excepcion.getMessage(), excepcion);
+		} 	finally {
+			daoFactory.cerrarConexion();
+		}
+
 	}
 
 	@Override
 	public List<PaisDTO> ConsultarPorFiltro(PaisDTO filtro) {
-		
-		return null;
+
+		try {
+			var filtroDominio = PaisDToAssembler.getIntance().convertirADominio(filtro);
+			var listaPaisesDominio = paisNegocio.ConsultarPorFiltro(filtroDominio);
+			return PaisDToAssembler.getIntance().convertirADTO(listaPaisesDominio);
+
+		} 	catch (LibreriaUCOExcepcion excepcion) {
+			throw excepcion;
+		} 	catch (Exception excepcion) {
+
+			var mensajeUsuario = CatalogoMensajes.PaisFachadaImpl.USUARIO_ERROR_PROBLEMA_INESPERADO_CONSULTANDO_PAISES_POR_FILTRO;
+			throw LibreriaUCOFachadaException.crear(mensajeUsuario, excepcion.getMessage(), excepcion);
+		} 	finally {
+			daoFactory.cerrarConexion();
+		}
+
 	}
 
 	@Override
@@ -110,8 +141,21 @@ public class PaisFachadaImpl implements PaisFachada {
 
 	@Override
 	public PaisDTO consultarPorID(UUID id) {
-		
-		return null;
+
+		try {
+			var paisDominio = paisNegocio.consultarPorID(id);
+			return PaisDToAssembler.getIntance().convertirADTO(paisDominio);
+
+		} 	catch (LibreriaUCOExcepcion excepcion) {
+			throw excepcion;
+		} 	catch (Exception excepcion) {
+
+			var mensajeUsuario = CatalogoMensajes.PaisFachadaImpl.USUARIO_ERROR_PROBLEMA_INESPERADO_CONSULTANDO_PAIS_POR_ID;
+			throw LibreriaUCOFachadaException.crear(mensajeUsuario, excepcion.getMessage(), excepcion);
+		} 	finally {
+			daoFactory.cerrarConexion();
+		}
+
 	}
 
 }

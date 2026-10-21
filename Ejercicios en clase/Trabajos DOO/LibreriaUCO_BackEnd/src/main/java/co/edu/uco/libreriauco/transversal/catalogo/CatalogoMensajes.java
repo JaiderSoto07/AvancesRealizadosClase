@@ -104,6 +104,8 @@ public class CatalogoMensajes {
 		
 		
 		public static final String PAIS_YA_EXISTE_CON_EL_MISMO_NOMBRE_DE_PAIS_A_CREAR = "ya existe otro pais con el cual se desea crear el pais deseado";
+		public static final String PAIS_YA_EXISTE_CON_EL_MISMO_NOMBRE_DE_PAIS_A_MODIFICAR = "ya existe otro pais con el nombre que se desea asignar al pais que se esta modificando";
+		public static final String PAIS_NO_EXISTE = "El pais sobre el cual se desea llevar a cabo la operacion no existe";
 		
 		public static  final String NOMBRE_PAIS_OBLIGATORIO  = "El nombre del pais es obligatorio para llevar a cabo la operacion deseada";
 		public static final String LONGITUD_NOMBRE_PAIS_NO_VALIDA = "La longitud del pais no es válida. Asegurese que esté entre 1 y 50";
@@ -119,5 +121,18 @@ public class CatalogoMensajes {
 		public static final String USUARIO_ERROR_PROBLEMA_INESPERADO_REGISTRANDO_PAIS = "se ha presentado un problema inesperado tratando de registrar la informacion del nuevo pais deseado. Por favor intente de nuevo y si el problema persiste contacte al administrador de la aplicacion";
 		public static final String USUARIO_ERROR_PROBLEMA_INESPERADO_MODIFICANDO_PAIS = "se ha presentado un problema inesperado tratando de modificar la informacion del pais deseado. Por favor intente de nuevo y si el problema persiste contacte al administrador de la aplicacion";
 		public static final String USUARIO_ERROR_PROBLEMA_INESPERADO_CONSULTANDO_TODOS_LOS_PAISES = "se ha presentado un problema inesperado tratando de consultar la informacion de todos los paises. Por favor intente de nuevo y si el problema persiste contacte al administrador de la aplicacion";
+		public static final String USUARIO_ERROR_PROBLEMA_INESPERADO_DANDO_BAJA_PAIS = "se ha presentado un problema inesperado tratando de dar de baja la informacion del pais deseado. Por favor intente de nuevo y si el problema persiste contacte al administrador de la aplicacion";
+		public static final String USUARIO_ERROR_PROBLEMA_INESPERADO_CONSULTANDO_PAISES_POR_FILTRO = "se ha presentado un problema inesperado tratando de consultar la informacion de los paises que cumplen con el filtro deseado. Por favor intente de nuevo y si el problema persiste contacte al administrador de la aplicacion";
+		public static final String USUARIO_ERROR_PROBLEMA_INESPERADO_CONSULTANDO_PAIS_POR_ID = "se ha presentado un problema inesperado tratando de consultar la informacion del pais deseado. Por favor intente de nuevo y si el problema persiste contacte al administrador de la aplicacion";
 	}
+
+	public static class AbstractRestController {
+
+		private AbstractRestController() {
+
+		}
+
+		public static final String USUARIO_ERROR_RECURSO_NO_EXISTE = "Ojo que el recurso que se solicito no existe: ";
+		public static final String USUARIO_ERROR_PROBLEMA_INESPERADO_EN_CONTROLADOR = "Se ha presentado un problema inesperado tratando de llevar a cabo la operacion deseada, por favor intente de nuevo y si el problema persiste contacte al administrador de la aplicacion y entreguele el codigo que se muestra a continuacion";
 	}
+}

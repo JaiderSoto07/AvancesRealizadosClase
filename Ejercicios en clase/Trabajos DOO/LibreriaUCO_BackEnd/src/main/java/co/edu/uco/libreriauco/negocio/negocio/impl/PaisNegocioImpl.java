@@ -9,7 +9,9 @@ import co.edu.uco.libreriauco.entidad.PaisEntidad;
 import co.edu.uco.libreriauco.negocio.negocio.PaisNegocio;
 import co.edu.uco.libreriauco.negocio.negocio.assembler.impl.PaisEntidadEAssembler;
 import co.edu.uco.libreriauco.negocio.negocio.reglas.impl.pais.AsegurarNombreNuevoPaisNoExistaRule;
+import co.edu.uco.libreriauco.negocio.negocio.reglas.impl.pais.AsegurarNombrePaisNoUsadoPorOtroPaisRule;
 import co.edu.uco.libreriauco.negocio.negocio.reglas.impl.pais.AsegurarNombrePaisValidoRule;
+import co.edu.uco.libreriauco.negocio.negocio.reglas.impl.pais.AsegurarPaisExisteRule;
 import co.edu.uco.libreriauco.negocio.negocio.reglas.impl.pais.ValidarDatosRegistrarNuevoPaisRule;
 import co.edu.uco.libreriauco.transversal.catalogo.CatalogoMensajes;
 import co.edu.uco.libreriauco.transversal.excepciones.LibreriaUCONegocioException;
@@ -52,20 +54,29 @@ public class PaisNegocioImpl implements PaisNegocio{
 	
 	@Override
 	public void modificarInformacionPaisExistente(UUID id, PaisDominio datos) {
-		// TODO Auto-generated method stub
-		
+		AsegurarPaisExisteRule.obtenerInstancia().ejecutar(id, daoFactory);
+		AsegurarNombrePaisValidoRule.obtenerIntancia().ejecutar(datos.getNombre());
+		AsegurarNombrePaisNoUsadoPorOtroPaisRule.obtenerInstancia().ejecutar(id, datos.getNombre(), daoFactory);
+
+		var paisEntidad = PaisEntidadEAssembler.getIntance().convertirAEntidad(datos);
+
+		daoFactory.obtenerPaisDAO().actualizar(id, paisEntidad);
+
 	}
 
 	@Override
 	public void DarBajaInformacionPaisExistente(UUID id) {
-		// TODO Auto-generated method stub
-		
+		AsegurarPaisExisteRule.obtenerInstancia().ejecutar(id, daoFactory);
+
+		daoFactory.obtenerPaisDAO().eliminar(id);
+
 	}
 
 	@Override
 	public List<PaisDominio> ConsultarPorFiltro(PaisDominio filtro) {
-		// TODO Auto-generated method stub
-		return null;
+		var entidadFiltro = PaisEntidadEAssembler.getIntance().convertirAEntidad(filtro);
+		var listaEntidades = daoFactory.obtenerPaisDAO().consultarPorFiltro(entidadFiltro);
+		return listaEntidades.stream().map(PaisEntidadEAssembler.getIntance()::convertirADominio).toList();
 	}
 
 	@Override
@@ -76,8 +87,8 @@ public class PaisNegocioImpl implements PaisNegocio{
 
 	@Override
 	public PaisDominio consultarPorID(UUID id) {
-		// TODO Auto-generated method stub
-		return null;
+		var paisEntidad = daoFactory.obtenerPaisDAO().consultarPorId(id);
+		return PaisEntidadEAssembler.getIntance().convertirADominio(paisEntidad);
 	}
 
 }
